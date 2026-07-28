@@ -12,9 +12,11 @@ script (imsld.py / dxt.py / tgares_codec.py); BMPRES is parsed inline below.
 
 Decodable kinds:
   AIMRES2 class 17/18 with an IMSLD32 / IMSLDXT1|3|5 / IMDXT1|3|5 chunk
+  TILEDIM atlas pages: IMHC4444/1555/565, BMPRES tiles, native IMSLD32,
+    MIPMCONT-wrapped IMSLD32 (tiledim_codec.py)
   TGARES (town ground textures)
   BMPRES  (embedded uncompressed 24/32-bit BMP)
-Everything else (pure TILEDIM containers, unknown) is listed with
+Everything else (IMJPG24/32 tile containers, unknown) is listed with
 decodable=false — the atlasEditor web tool covers those.
 """
 from __future__ import print_function
@@ -35,6 +37,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import imsld  # noqa: E402
 import tgares_codec  # noqa: E402
+import tiledim_codec  # noqa: E402
 
 # ---------------------------------------------------------------------------
 # Tiny RGBA -> PNG encoder (stdlib only)
@@ -168,6 +171,41 @@ def _find_image_chunk(data):
     return None
 
 
+# Sub-kinds (after "TILEDIM/") that the tiledim_codec page decoder handles.
+# Anything else (IMSLDXT*/IMDXT*/IMSLD32 single-image chunks, IMJPG24/32)
+# stays on the imsld path or non-decodable.
+_TILEDIM_PAGE_KINDS = frozenset(
+    ("IMHC4444", "IMHC1555", "IMHC565", "BMPRES", "BMP32", "IMSLD32N",
+     "MIPMSLD"))
+
+
+def _sniff_tiledim_page(path, head):
+    """Class-18 TILEDIM atlas page?  Cheap head check first (first tile tag
+    strictly at TILEDIM+20), full read + tiledim_codec.sniff only then.
+    Returns a sniff_file dict or None."""
+    td = head.find(b"TILEDIM ")
+    if td < 0 or td + 28 > len(head):
+        return None
+    ftag = head[td + 20:td + 28]
+    cand = ftag in tiledim_codec.PAGE_FIRST_TAGS
+    if not cand and ftag == b"IMSLD32 ":
+        # native five-field IMSLD32 page marker (sld_mode, sld_variant)==(2,2)
+        mode, var = struct.unpack_from("<2I", head, td + 28)
+        cand = (mode, var) == (2, 2)
+    if not cand:
+        return None
+    try:
+        with open(path, "rb") as f:
+            data = f.read()
+    except OSError:
+        return None
+    s = tiledim_codec.sniff(data)
+    if s is None:
+        return None
+    kinds, w, h = s
+    return {"kind": "TILEDIM/" + kinds, "w": w, "h": h, "decodable": True}
+
+
 def sniff_file(path):
     """Return dict(kind, w, h, decodable) for one .aim file (header only)."""
     try:
@@ -188,6 +226,10 @@ def sniff_file(path):
             return {"kind": "TGARES", "w": w, "h": h, "decodable": True}
         cls = struct.unpack_from("<I", head, 0x10)[0] if len(head) >= 20 else 0
         cls_name = _CLASS_NAMES.get(cls)
+        if cls == 18:
+            page = _sniff_tiledim_page(path, head)
+            if page:
+                return page
         found = _find_image_chunk(head)
         if found:
             tag, w, h = found
@@ -216,6 +258,11 @@ def decode_file(path, kind):
         if bgra is None:
             raise ValueError("TGARES decode failed")
         return bgra, wh[0], wh[1]
+    if kind.startswith("TILEDIM/"):
+        sub = kind.split("/", 1)[1].split("+")
+        if all(k in _TILEDIM_PAGE_KINDS for k in sub):
+            rgba, w, h = tiledim_codec.decode_page_rgba(data)
+            return bgra_to_rgba(rgba), w, h  # swap is symmetric (R<->B)
     img = imsld.decode_aim_file(data)  # raises imsld.ImsldError
     return img.bgra, img.w, img.h
 
