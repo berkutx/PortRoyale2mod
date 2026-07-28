@@ -158,12 +158,27 @@ def parse_aimres2(data):
             off += size_a
             chunks.append(AimChunk(tag_s.strip(), fields, payload))
             continue
-        if tag_s.startswith("IMSLDXT") or tag_s.startswith("IMDXT"):
-            # w, h, size_a, size_b then size_a payload (DXT ± SLD)
+        if tag_s.startswith("IMSLDXT"):
+            # w, h, size_a, size_b then size_a payload (SLD-compressed DXT)
             if off + 16 > n:
                 break
             fields = struct.unpack_from("<4I", data, off)
             off += 16
+            size_a = fields[2]
+            if size_a > n - off:
+                size_a = n - off
+            payload = data[off : off + size_a]
+            off += size_a
+            chunks.append(AimChunk(tag_s.strip(), fields, payload))
+            continue
+        if tag_s.startswith("IMDXT"):
+            # RAW DXT: header is only 3×u32 (w, h, size) — a 4th dword is
+            # already DXT payload (verified on Hauptmenu12/PR2Ships textures:
+            # reading 4 dwords shifts every block and scrambles the image).
+            if off + 12 > n:
+                break
+            fields = struct.unpack_from("<3I", data, off)
+            off += 12
             size_a = fields[2]
             if size_a > n - off:
                 size_a = n - off
