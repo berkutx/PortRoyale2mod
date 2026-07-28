@@ -377,9 +377,12 @@ def sld_decompress_stream(payload, expected=None):
 
 def decode_imsld32_chunk(fields, payload, expect_planes=False):
     """
-    fields: 6×u32 (unk0, unk1, w, h, size_a, size_b)
+    fields: 6×u32 (mode, variant, w, h, size_a, size_b)
     Returns (raw_bytes, (w, h), layout) where layout is 'bgra' or 'plane'.
+    (0,2) = four packed B/G/R/A planes (verified on images\\Bodentexturen);
+    (2,1) = direct interleaved BGRA.
     """
+    mode, variant = fields[0], fields[1]
     w, h = fields[2], fields[3]
     if w <= 0 or h <= 0 or w > 4096 or h > 4096:
         raise ImsldError("bad dimensions %sx%s" % (w, h))
@@ -387,6 +390,13 @@ def decode_imsld32_chunk(fields, payload, expect_planes=False):
     need_plane = w * h
 
     raw = sld_decompress_stream(payload, expected=need_bgra)
+    if mode == 0 and len(raw) >= need_bgra:
+        # four sequential planes B,G,R,A by w*h — interleave, NOT interleaved
+        # (verified on Bodentexturen/Minimap_BG/pirat00/Fechtkampf-pause:
+        # any variant value, mode selects the layout)
+        n = w * h
+        planes = [raw[j * n : (j + 1) * n] for j in range(4)]
+        return _planes_to_bgra(planes, w, h), (w, h), "bgra"
     if len(raw) >= need_bgra:
         return raw[:need_bgra], (w, h), "bgra"
     if len(raw) >= need_plane:
