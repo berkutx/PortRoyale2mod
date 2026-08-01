@@ -32,4 +32,7 @@ on stock TexPage files — needs Pillow + numpy installed, it is a dev check,
 not a viewer dependency.
 
 The viewer is read-only: it scans headers once at startup and decodes lazily
-per click, so it stays fast on multi-thousand-file trees.
+per click, so it stays fast on multi-thousand-file trees. The details panel
+also shows the exact on-disk layout signature (for example
+`AIMRES2/class18/TILEDIM/IMSLDXT1`). This is the format identity that editors
+must preserve on a normal save.

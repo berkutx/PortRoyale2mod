@@ -171,6 +171,40 @@ def _find_image_chunk(data):
     return None
 
 
+def aim_layout_signature(data):
+    """Return the on-disk container/chunk identity without decoding pixels.
+
+    Editors use this identity as a save invariant: a TILEDIM/IMSLDXT1 input,
+    for example, must not silently become TILEDIM/IMSLD32 after an edit.
+    """
+    if data.startswith(b"BMPRES  "):
+        return "BMPRES"
+    if not data.startswith(b"AIMRES2") or len(data) < 28:
+        return "unknown"
+
+    cls = struct.unpack_from("<I", data, 0x10)[0]
+    parts = ["AIMRES2", "class%d" % cls]
+    outer = data[20:28]
+    if all(32 <= c < 127 for c in outer):
+        outer_name = outer.decode("latin-1").strip()
+        if outer_name:
+            parts.append(outer_name)
+    child = None
+    child_off = 40 if outer == b"TILEDIM " else (
+        36 if outer == b"MIPMCONT" else None)
+    if child_off is not None and child_off + 8 <= len(data):
+        direct = data[child_off:child_off + 8]
+        if all(32 <= c < 127 for c in direct):
+            child = direct.decode("latin-1").strip()
+    if child is None:
+        found = _find_image_chunk(data)
+        child = found[0] if found else None
+    if child:
+        if not parts or parts[-1] != child:
+            parts.append(child)
+    return "/".join(parts)
+
+
 # Sub-kinds (after "TILEDIM/") that the tiledim_codec page decoder handles.
 # Anything else (IMSLDXT*/IMDXT*/IMSLD32 single-image chunks, IMJPG24/32)
 # stays on the imsld path or non-decodable.
@@ -207,39 +241,42 @@ def _sniff_tiledim_page(path, head):
 
 
 def sniff_file(path):
-    """Return dict(kind, w, h, decodable) for one .aim file (header only)."""
+    """Return kind/layout/geometry/decodability for one .aim file."""
     try:
         with open(path, "rb") as f:
             head = f.read(4096)
     except OSError:
-        return {"kind": "unknown", "w": None, "h": None, "decodable": False}
+        return {"kind": "unknown", "layout": "unknown", "w": None, "h": None, "decodable": False}
+
+    layout = aim_layout_signature(head)
 
     wh = bmpres_sniff(head)
     if wh:
-        return {"kind": "BMPRES", "w": wh[0], "h": wh[1], "decodable": True}
+        return {"kind": "BMPRES", "layout": layout, "w": wh[0], "h": wh[1], "decodable": True}
 
     if head.startswith(b"AIMRES2"):
         if b"TGARES" in head[:80]:
             hdr = tgares_codec.parse_header(head)
             w = hdr["w"] if hdr else None
             h = hdr["h"] if hdr else None
-            return {"kind": "TGARES", "w": w, "h": h, "decodable": True}
+            return {"kind": "TGARES", "layout": layout, "w": w, "h": h, "decodable": True}
         cls = struct.unpack_from("<I", head, 0x10)[0] if len(head) >= 20 else 0
         cls_name = _CLASS_NAMES.get(cls)
         if cls == 18:
             page = _sniff_tiledim_page(path, head)
             if page:
+                page["layout"] = layout
                 return page
         found = _find_image_chunk(head)
         if found:
             tag, w, h = found
             kind = "%s/%s" % (cls_name, tag) if cls_name else tag
-            return {"kind": kind, "w": w, "h": h, "decodable": True}
+            return {"kind": kind, "layout": layout, "w": w, "h": h, "decodable": True}
         if cls_name:
-            return {"kind": cls_name, "w": None, "h": None, "decodable": False}
-        return {"kind": "AIMRES2", "w": None, "h": None, "decodable": False}
+            return {"kind": cls_name, "layout": layout, "w": None, "h": None, "decodable": False}
+        return {"kind": "AIMRES2", "layout": layout, "w": None, "h": None, "decodable": False}
 
-    return {"kind": "unknown", "w": None, "h": None, "decodable": False}
+    return {"kind": "unknown", "layout": layout, "w": None, "h": None, "decodable": False}
 
 
 # ---------------------------------------------------------------------------
@@ -293,6 +330,7 @@ def scan(root):
                     "name": os.path.basename(rel),
                     "size": size,
                     "kind": info["kind"],
+                    "layout": info["layout"],
                     "w": info["w"],
                     "h": info["h"],
                     "decodable": info["decodable"],
@@ -430,6 +468,7 @@ INDEX_HTML = r"""<!DOCTYPE html>
           <div class="rel">{{ sel.path }}</div>
           <div class="meta">
             <span>kind: {{ sel.kind }}</span>
+            <span>disk layout: {{ sel.layout }}</span>
             <span>dims: {{ sel.w ? sel.w+'×'+sel.h : '?' }}</span>
             <span>size: {{ fmtSize(sel.size) }}</span>
           </div>
