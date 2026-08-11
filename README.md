@@ -4,6 +4,29 @@ Modding tools for Port Royale 2 (GOG 1.1.2.3): CPR archive extraction and
 AIM image viewing/editing. Everything is pure Python 3.7+ stdlib unless
 noted otherwise.
 
+## Localization packages — release v1.0
+
+The [`localizations`](localizations/) directory documents the public
+localization packages for the exact English GOG 1.1.2.3 executable. The
+ordinary, inspectable `*.pr2loc.zip` assets are published on the
+[v1.0 Releases page](https://github.com/berkutx/PortRoyale2mod/releases/tag/v1.0):
+
+- German / Deutsch
+- Spanish / Español
+- Polish / Polski
+- Russian / Русский
+
+Use **PR2 Addon Configurator.exe** next to the supported `PR2.exe`: select a
+language, press **Download & install**, then **Activate**. The Configurator
+checks the fixed release size and SHA-256 before applying the package's full
+manifest validation. You can also download a package yourself, open it with
+any ZIP archiver, review `manifest.json` and UTF-8 `strings.jsonl`, and choose
+**Install local...**. A translated executable is never required and must not
+replace the supported GOG executable.
+
+Project links: [Discord](https://discord.com/channels/608039137265582100/1429799720007503892) ·
+[Patreon](https://www.patreon.com/collection/2278934?view=expanded)
+
 ## Tools
 
 | Tool | What it does |

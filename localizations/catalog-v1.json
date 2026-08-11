@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "repository": "https://github.com/berkutx/PortRoyale2mod",
+  "release": {
+    "tag": "v1.0",
+    "url": "https://github.com/berkutx/PortRoyale2mod/releases/tag/v1.0"
+  },
+  "target": {
+    "game": "Port Royale 2",
+    "edition": "English GOG 1.1.2.3",
+    "exe_sha256": "394CE2A48BC6B21708B81A232C7C88459BE7F3C8082CC593AD83B0B8E4C168EC"
+  },
+  "packages": [
+    {
+      "locale": "de",
+      "display_name": "German / Deutsch",
+      "package_id": "de-retail",
+      "version": "1.0.0",
+      "asset_name": "de-retail-1.0.0.pr2loc.zip",
+      "download_url": "https://github.com/berkutx/PortRoyale2mod/releases/download/v1.0/de-retail-1.0.0.pr2loc.zip",
+      "size": 155302506,
+      "sha256": "D9EFC86B7A561F3BB4B998C9B8A292D37DCACA01766DC6FC391F208AAECFB7AB"
+    },
+    {
+      "locale": "es",
+      "display_name": "Spanish / Español",
+      "package_id": "es-retail",
+      "version": "1.0.0",
+      "asset_name": "es-retail-1.0.0.pr2loc.zip",
+      "download_url": "https://github.com/berkutx/PortRoyale2mod/releases/download/v1.0/es-retail-1.0.0.pr2loc.zip",
+      "size": 145620368,
+      "sha256": "6FF9039CE91C78DE5E5D1D199ECAF48C7D0DA4752153DA0D3B955CFC28969864"
+    },
+    {
+      "locale": "pl",
+      "display_name": "Polish / Polski",
+      "package_id": "pl-retail",
+      "version": "1.0.0",
+      "asset_name": "pl-retail-1.0.0.pr2loc.zip",
+      "download_url": "https://github.com/berkutx/PortRoyale2mod/releases/download/v1.0/pl-retail-1.0.0.pr2loc.zip",
+      "size": 2635483,
+      "sha256": "1509941E56C0EAFF5B0D6C8106BBBA7686FBFEF6D7FFDC0949D403C8415964F1"
+    },
+    {
+      "locale": "ru",
+      "display_name": "Russian / Русский",
+      "package_id": "ru-retail",
+      "version": "1.0.0",
+      "asset_name": "ru-retail-1.0.0.pr2loc.zip",
+      "download_url": "https://github.com/berkutx/PortRoyale2mod/releases/download/v1.0/ru-retail-1.0.0.pr2loc.zip",
+      "size": 134556347,
+      "sha256": "C32DEEF8B51EF9FF464863A09488343C8723168ADF12C8B9802F940FFC9B51CA"
+    }
+  ]
+}
