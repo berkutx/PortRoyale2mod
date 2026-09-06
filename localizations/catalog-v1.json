@@ -50,6 +50,16 @@
       "download_url": "https://github.com/berkutx/PortRoyale2mod/releases/download/v1.0/ru-retail-1.0.0.pr2loc.zip",
       "size": 134556347,
       "sha256": "C32DEEF8B51EF9FF464863A09488343C8723168ADF12C8B9802F940FFC9B51CA"
+    },
+    {
+      "locale": "zh-CN",
+      "display_name": "简体中文 / Simplified Chinese",
+      "package_id": "zh-cn-community",
+      "version": "1.0.0",
+      "asset_name": "zh-cn-community-1.0.0.pr2loc.zip",
+      "download_url": "https://github.com/berkutx/PortRoyale2mod/releases/download/v1.0/zh-cn-community-1.0.0.pr2loc.zip",
+      "size": 43536040,
+      "sha256": "0CA906B7B85591E9E6D41E9589718CC8826C031D80A0CD86A5732A10213ED975"
     }
   ]
 }

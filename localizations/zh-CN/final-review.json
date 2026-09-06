@@ -1,0 +1,19 @@
+{
+  "locale": "zh-CN",
+  "method": "English-base translation with Spanish/Russian contextual comparison, targeted German comparison, and separate sampled gameplay QA; AI-assisted, not native-speaker certification.",
+  "duplicate_english_groups_reviewed": 71,
+  "gameplay_sample_reviewed": 60,
+  "unchanged_rows_reviewed_before_final_corrections": 547,
+  "untranslated_full_hints_found": 0,
+  "town_names_reviewed": {"regular": 60, "foundable": 16, "untranslated": 0},
+  "final_corrections": [
+    {"hash": "0x343E9F4B", "decision": "Explain one employed settler as a four-person family including one worker, not five new residents.", "evidence": "Scenario 0x0F1ADE15 explicitly equates 120 workers with 480 citizens."},
+    {"hash": "0x0D23B497", "decision": "普通水手, matching Ordinary Sailor rank 01, distinct from Sailor rank 02 水手."},
+    {"hash": "0x35F48FE6", "decision": "Use full 诺姆布雷-德迪奥斯 to match the town label on the map."},
+    {"hash": "0xD3481946", "decision": "Translate residual German debug label Lokalität as 地点; IDPR_TEST_07."}
+  ],
+  "remaining_uncertainty": [
+    "Native-player review is still needed for idiomatic prose and tiny in-game labels.",
+    "0xC93B91CB preserves trading profits as in EN/ES/RU rather than guessing a different mission condition."
+  ]
+}

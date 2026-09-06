@@ -13,14 +13,27 @@ Steam and other executable hashes are not supported. Do not replace
 
 1. Close Port Royale 2.
 2. Run `PR2 Addon Configurator.exe` next to the supported `PR2.exe`.
-3. Select German, Spanish, Polish, or Russian under **Online language**.
+3. Select a package under **Online package**. The updated Configurator discovers
+   available `.pr2loc.zip` assets directly in the published GitHub `v1.0` release.
 4. Press **Download & install**, select the installed package, then press
-   **Activate**.
+   **Use selected**.
 5. Start the normal `PR2.exe`.
 
 For offline installation, download the desired `*.pr2loc.zip` from the
 [v1.0 release](https://github.com/berkutx/PortRoyale2mod/releases/tag/v1.0),
-choose **Install local...**, then **Activate**.
+choose **Install local...**, then **Use selected**.
+
+To restore the supported game's original English, select **English — original
+game**, then **Use selected**. The manager restores its recorded preimages of
+fonts, audio and video; externally modified files stop rollback for review.
+Use the updated Configurator throughout activation and rollback: its v5
+ownership state records font replacements and newly created font directories.
+
+**Known issue, 2026-09-06:** the current Configurator may show an empty online
+list after the Chinese package was published. Its discovery parser rejects
+the package's complete font-license text; this does not mean installed languages
+were removed. Until the parser fix is released, download the desired ZIP from
+the release page and use local installation. Do not remove or shorten the license.
 
 ## Inspect and verify
 
@@ -32,13 +45,17 @@ It can be inspected without the Configurator. Every package contains:
 - `strings.res` — the UTF-16LE string table consumed by the addon;
 - only the font/audio assets declared by the manifest.
 
-The Configurator verifies the exact v1.0 release byte count and SHA-256, then
+The Configurator obtains size and SHA-256 from the GitHub release API, previews
+only the bounded manifest range to discover language metadata, then verifies
+the complete downloaded archive against those values. It also
 revalidates ZIP structure, CRC-32, every declared member hash and size, safe
 Windows paths, and the target executable hash. Package contents are never
 executed or loaded as DLLs.
 
-The authoritative machine-readable release index is
-[`catalog-v1.json`](catalog-v1.json); standalone checksums are in
+[`catalog-v1.json`](catalog-v1.json) is a convenient published index, not the
+updated Configurator's discovery source. Uploading a valid package to the
+release does not require editing a language list in the program.
+Standalone checksums are in
 [`SHA256SUMS.txt`](SHA256SUMS.txt).
 
 ## Languages
@@ -49,6 +66,11 @@ The authoritative machine-readable release index is
 | Spanish / Español | `es-retail-1.0.0.pr2loc.zip` | 145,620,368 | `6FF9039CE91C78DE5E5D1D199ECAF48C7D0DA4752153DA0D3B955CFC28969864` |
 | Polish / Polski | `pl-retail-1.0.0.pr2loc.zip` | 2,635,483 | `1509941E56C0EAFF5B0D6C8106BBBA7686FBFEF6D7FFDC0949D403C8415964F1` |
 | Russian / Русский | `ru-retail-1.0.0.pr2loc.zip` | 134,556,347 | `C32DEEF8B51EF9FF464863A09488343C8723168ADF12C8B9802F940FFC9B51CA` |
+| Simplified Chinese / 简体中文 — community preview | `zh-cn-community-1.0.0.pr2loc.zip` | 43,536,040 | `0CA906B7B85591E9E6D41E9589718CC8826C031D80A0CD86A5732A10213ED975` |
+
+The Chinese preview contains text and four static Chinese fonts only; no
+audio, video, images, executable or CPR files. See [Chinese release notes](zh-CN/)
+for its AI-assisted translation disclosure and current runtime acceptance limit.
 
 Community: [Discord](https://discord.com/channels/608039137265582100/1429799720007503892) ·
 [Patreon](https://www.patreon.com/collection/2278934?view=expanded)

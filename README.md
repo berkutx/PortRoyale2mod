@@ -15,14 +15,23 @@ ordinary, inspectable `*.pr2loc.zip` assets are published on the
 - Spanish / Español
 - Polish / Polski
 - Russian / Русский
+- Simplified Chinese / 简体中文 — [community preview](localizations/zh-CN/)
 
 Use **PR2 Addon Configurator.exe** next to the supported `PR2.exe`: select a
-language, press **Download & install**, then **Activate**. The Configurator
-checks the fixed release size and SHA-256 before applying the package's full
+language, press **Download & install**, then **Use selected**. The updated
+Configurator discovers `.pr2loc.zip` files in the GitHub release and reads
+their language metadata from each archive's manifest. It checks the release
+asset's size and SHA-256 before applying the package's full
 manifest validation. You can also download a package yourself, open it with
 any ZIP archiver, review `manifest.json` and UTF-8 `strings.jsonl`, and choose
 **Install local...**. A translated executable is never required and must not
 replace the supported GOG executable.
+
+The updated Configurator also has a Simplified Chinese interface. Its UI
+language is independent of the game's active localization. Select
+**English — original game**, then **Use selected**, to roll back a managed
+localization. Chinese package scope and current testing limits are documented
+in its [release notes](localizations/zh-CN/).
 
 Project links: [Discord](https://discord.com/channels/608039137265582100/1429799720007503892) ·
 [Patreon](https://www.patreon.com/collection/2278934?view=expanded)

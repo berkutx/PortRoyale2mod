@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "schema": 1,
+  "kind": "pr2-localization",
+  "package_id": "zh-cn-community",
+  "id": "zh-cn-community",
+  "version": "1.0.0",
+  "locale": "zh-CN",
+  "language": "zh-CN",
+  "display_name": "简体中文 / Simplified Chinese",
+  "target": {
+    "game": "port-royale-2",
+    "exe_sha256": "394CE2A48BC6B21708B81A232C7C88459BE7F3C8082CC593AD83B0B8E4C168EC"
+  },
+  "assets": [
+    {
+      "kind": "font",
+      "game_path": "fonts/ARIAL.TTF",
+      "package_path": "payload/fonts/ARIAL.TTF",
+      "size": 10604400,
+      "sha256": "f7f1bc83d5132ade69479ccccb1882eff2aa0df0b39a3e5ba06efb880b7e46ea"
+    },
+    {
+      "kind": "font",
+      "game_path": "fonts/ELGRECO_.TTF",
+      "package_path": "payload/fonts/ELGRECO_.TTF",
+      "size": 10594068,
+      "sha256": "6e0752f8e467e9627728725fe097e12a249ea1eb37e4f9afce21da7d66a32d76"
+    },
+    {
+      "kind": "font",
+      "game_path": "fonts/Tiepolo_bold.ttf",
+      "package_path": "payload/fonts/Tiepolo_bold.ttf",
+      "size": 10593924,
+      "sha256": "37175f9cfc1301ccb4487edcf86bf255bbe7b482f3e1e4406872a1ed68da67f3"
+    },
+    {
+      "kind": "font",
+      "game_path": "fonts/Tiepolo_black.ttf",
+      "package_path": "payload/fonts/Tiepolo_black.ttf",
+      "size": 10585144,
+      "sha256": "619a119f46d582a9f3fd0051f19158e4bc443ca07526f725ed6317239fc86b98"
+    }
+  ],
+  "source": {
+    "kind": "community-translation",
+    "base_language": "en",
+    "base_exe_sha256": "394CE2A48BC6B21708B81A232C7C88459BE7F3C8082CC593AD83B0B8E4C168EC",
+    "translation_method": "AI-assisted translation; native-player review requested",
+    "scope": "Text and fonts only; original English audio/video are unchanged",
+    "font": {
+      "family": "PR2 Community SC (static derivative of Noto Sans SC)",
+      "source_revision": "a85815a42757630ce188fdad368c2dfc444d4773",
+      "source_sha256": "a3041811a78c361b1de50f953c805e0244951c21c5bd412f7232ef0d899af0da",
+      "source_url": "https://github.com/google/fonts/tree/a85815a42757630ce188fdad368c2dfc444d4773/ofl/notosanssc",
+      "tool": "fonttools 4.64.0",
+      "license": "OFL-1.1",
+      "license_text": "Copyright 2014-2021 Adobe (http://www.adobe.com/), with Reserved Font Name 'Source'\n\nThis Font Software is licensed under the SIL Open Font License, Version 1.1.\nThis license is copied below, and is also available with a FAQ at:\nhttps://scripts.sil.org/OFL\n\n\n-----------------------------------------------------------\nSIL OPEN FONT LICENSE Version 1.1 - 26 February 2007\n-----------------------------------------------------------\n\nPREAMBLE\nThe goals of the Open Font License (OFL) are to stimulate worldwide\ndevelopment of collaborative font projects, to support the font creation\nefforts of academic and linguistic communities, and to provide a free and\nopen framework in which fonts may be shared and improved in partnership\nwith others.\n\nThe OFL allows the licensed fonts to be used, studied, modified and\nredistributed freely as long as they are not sold by themselves. The\nfonts, including any derivative works, can be bundled, embedded, \nredistributed and/or sold with any software provided that any reserved\nnames are not used by derivative works. The fonts and derivatives,\nhowever, cannot be released under any other type of license. The\nrequirement for fonts to remain under this license does not apply\nto any document created using the fonts or their derivatives.\n\nDEFINITIONS\n\"Font Software\" refers to the set of files released by the Copyright\nHolder(s) under this license and clearly marked as such. This may\ninclude source files, build scripts and documentation.\n\n\"Reserved Font Name\" refers to any names specified as such after the\ncopyright statement(s).\n\n\"Original Version\" refers to the collection of Font Software components as\ndistributed by the Copyright Holder(s).\n\n\"Modified Version\" refers to any derivative made by adding to, deleting,\nor substituting -- in part or in whole -- any of the components of the\nOriginal Version, by changing formats or by porting the Font Software to a\nnew environment.\n\n\"Author\" refers to any designer, engineer, programmer, technical\nwriter or other person who contributed to the Font Software.\n\nPERMISSION & CONDITIONS\nPermission is hereby granted, free of charge, to any person obtaining\na copy of the Font Software, to use, study, copy, merge, embed, modify,\nredistribute, and sell modified and unmodified copies of the Font\nSoftware, subject to the following conditions:\n\n1) Neither the Font Software nor any of its individual components,\nin Original or Modified Versions, may be sold by itself.\n\n2) Original or Modified Versions of the Font Software may be bundled,\nredistributed and/or sold with any software, provided that each copy\ncontains the above copyright notice and this license. These can be\nincluded either as stand-alone text files, human-readable headers or\nin the appropriate machine-readable metadata fields within text or\nbinary files as long as those fields can be easily viewed by the user.\n\n3) No Modified Version of the Font Software may use the Reserved Font\nName(s) unless explicit written permission is granted by the corresponding\nCopyright Holder. This restriction only applies to the primary font name as\npresented to the users.\n\n4) The name(s) of the Copyright Holder(s) or the Author(s) of the Font\nSoftware shall not be used to promote, endorse or advertise any\nModified Version, except to acknowledge the contribution(s) of the\nCopyright Holder(s) and the Author(s) or with their explicit written\npermission.\n\n5) The Font Software, modified or unmodified, in part or in whole,\nmust be distributed entirely under this license, and must not be\ndistributed under any other license. The requirement for fonts to\nremain under this license does not apply to any document created\nusing the Font Software.\n\nTERMINATION\nThis license becomes null and void if any of the above conditions are\nnot met.\n\nDISCLAIMER\nTHE FONT SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT\nOF COPYRIGHT, PATENT, TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL THE\nCOPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,\nINCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL\nDAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING\nFROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM\nOTHER DEALINGS IN THE FONT SOFTWARE.\n"
+    }
+  },
+  "strings": {
+    "path": "strings.res",
+    "source_path": "strings.jsonl",
+    "count": 3548,
+    "target_count": 3548,
+    "size": 277486,
+    "sha256": "c36e3e2651f66a1f4467d601c54c3c25500bd5a528d13aca6ec08f1b2f959719"
+  }
+}

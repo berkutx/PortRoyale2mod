@@ -1,0 +1,22 @@
+{"hash":"0xC4F9393F","source":"Name","text":"姓氏","reason":"ES Apellido and RU Фамилия identify the surname field; distinct from IDPR_NAME."}
+{"hash":"0x0059B428","source":"Name","text":"名称","reason":"IDPR_NAME is the general object-name label, not the separate surname field."}
+{"hash":"0xD1B2A54F","source":"General","text":"常规","reason":"RU Общее identifies the settings category, not the military rank."}
+{"hash":"0xF3DA810C","source":"General","text":"将军","reason":"RU Генерал identifies the military rank, not the settings category."}
+{"hash":"0x070BEF26","source":"General","text":"将军","reason":"RU Генерал identifies the military rank, not the settings category."}
+{"hash":"0xFC517065","source":"Jan","text":"Jan","reason":"ID_VNAME_052 is a character given name; retain English-base proper name."}
+{"hash":"0x136970B1","source":"Jan","text":"1月","reason":"ID_MONAT_ABK_JANUAR is the abbreviated month; ES Ene and RU Янв confirm."}
+{"hash":"0xF16B6923","source":"Delete","text":"Delete键","reason":"Keyboard-key label: RU Del; distinguish it from the delete action 删除."}
+{"hash":"0xEF651545","source":"Load","text":"载入","reason":"EN Load and original DE Laden; retain loading meaning instead of copying the inconsistent RU Запас."}
+{"hash":"0x04FF6269","source":"Load","text":"装货","reason":"IDPR_EINLADEN and original DE Einladen identify loading cargo; distinct from loading a saved game."}
+{"hash":"0x1426F58B","source":"Load","text":"载入","reason":"IDPR_LADEN and original DE Laden identify general loading; distinguish cargo action Einladen."}
+{"hash":"0xDCD01D24","source":"Casanova","text":"情圣","reason":"ES el Don Juan identifies a character epithet/bonus; distinct from the NPC surname ID_NNAME_080."}
+{"hash":"0xCF572202","source":"Casanova","text":"Casanova","reason":"ID_NNAME_080 is an NPC surname, preserved from the English base rather than translated as an epithet."}
+{"hash":"0xD10ED290","source":"English","text":"英格兰","reason":"RU английский and adjacent nation adjectives identify national affiliation, not interface language 英语."}
+{"hash":"0x00F1B8BC","source":"English","text":"英格兰","reason":"RU английского is a nation adjective in battle/trader text, not the English language."}
+{"hash":"0xD10ED291","source":"French","text":"法国","reason":"Nation affiliation in the four-nation adjective group; not interface language 法语."}
+{"hash":"0x00F1B8BD","source":"French","text":"法国","reason":"Nation adjective in battle/trader text; Chinese does not inflect grammatical case."}
+{"hash":"0xD10ED292","source":"Dutch","text":"荷兰","reason":"Nation affiliation in the four-nation adjective group; not interface language 荷兰语."}
+{"hash":"0x00F1B8BE","source":"Dutch","text":"荷兰","reason":"Nation adjective in battle/trader text; Chinese does not inflect grammatical case."}
+{"hash":"0xD10ED293","source":"Spanish","text":"西班牙","reason":"Nation affiliation in the four-nation adjective group; not interface language 西班牙语."}
+{"hash":"0x00F1B8BF","source":"Spanish","text":"西班牙","reason":"Nation adjective in battle/trader text; Chinese does not inflect grammatical case."}
+{"hash":"0xF1631E3E","source":"Transport convoy","text":"运输船队","reason":"EN noun phrase is confirmed by ES Convoy de transporte and DE Transportkonvoi; do not copy inconsistent RU verb phrase."}

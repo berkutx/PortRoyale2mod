@@ -1,0 +1,30 @@
+{
+  "rows": 3548,
+  "status": {
+    "translated": 3002,
+    "unchanged": 546
+  },
+  "glyph_coverage": {
+    "ARIAL.TTF": 2117,
+    "ELGRECO_.TTF": 2117,
+    "Tiepolo_black.ttf": 2117,
+    "Tiepolo_bold.ttf": 2117
+  },
+  "validation": {
+    "ok": true,
+    "errors": [],
+    "warnings": [],
+    "counts": {
+      "target": 3548,
+      "rows": 3548,
+      "included": 3548,
+      "status": {
+        "translated": 3002,
+        "unchanged": 546
+      },
+      "assets": {
+        "font": 4
+      }
+    }
+  }
+}
