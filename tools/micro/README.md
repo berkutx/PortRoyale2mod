@@ -36,3 +36,17 @@ per click, so it stays fast on multi-thousand-file trees. The details panel
 also shows the exact on-disk layout signature (for example
 `AIMRES2/class18/TILEDIM/IMSLDXT1`). This is the format identity that editors
 must preserve on a normal save.
+
+Preview decoding is recovery-oriented and is not proof that the game can load
+the same file. For an already bounded SLD block,
+`imsld.sld_decompress(block, strict_native=True)` additionally requires full
+32-bit lookahead words and rejects a match that exceeds the declared output.
+The default remains compatible with the read-only viewer. This block check
+does not validate the enclosing AIM lengths, block boundaries or all mip levels;
+an exporter must check those independently before reporting native validity.
+
+Run the synthetic regression tests without game files:
+
+```
+python -m unittest discover -s tools/micro -p test_sld_strict.py -v
+```
