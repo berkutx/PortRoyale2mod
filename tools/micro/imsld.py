@@ -19,11 +19,18 @@ length-prefixed. Decompressed size in the SLD header is either:
   * w*h    → one 8-bit plane (multiple IMSLD32 chunks → B,G,R,A)
 
 MIP chains: take the largest (first) level. TGARES still via aim_codec.
+
+Default readers are recovery/preview tools: they may resynchronize, clip or
+pad malformed input. Successful preview decoding does NOT establish native
+game compatibility. Use sld_decompress(..., strict_native=True) to check an
+already bounded bitstream. Exporters must separately validate the complete
+container and every mip/block boundary; this viewer has no export pipeline.
 """
 from __future__ import print_function
 
 import struct
 import zlib
+import warnings
 
 from collections import namedtuple
 
@@ -56,6 +63,11 @@ class ImsldError(ValueError):
     pass
 
 
+def _recovery_warning(reason, offset):
+    warnings.warn("AIM recovery at 0x%X: %s; this does not establish native compatibility" %
+                  (offset, reason), RuntimeWarning, stacklevel=2)
+
+
 class _BitReader(object):
     """LSB-first bit pack matching AIM20 sub_1008484C / sub_1008491C."""
 
@@ -78,6 +90,7 @@ class _BitReader(object):
             self.cur = 0
             self.bits_left = 0
             return
+        _recovery_warning("zero-padding partial DWORD", self.off - len(rest))
         self.cur = int.from_bytes(rest.ljust(4, b"\x00"), "little")
         self.bits_left = 8 * len(rest)
 
@@ -100,6 +113,21 @@ class _BitReader(object):
             self.bits_left -= take
             got += take
         return result
+
+
+class _NativeBitReader(_BitReader):
+    """AIM20 eager DWORD refill; never synthesize missing lookahead bytes."""
+
+    def _fill(self):
+        if self.off + 4 > len(self.data):
+            raise ImsldError("native SLD: missing DWORD lookahead at 0x%X" % self.off)
+        _BitReader._fill(self)
+
+    def read(self, nbits):
+        value = _BitReader.read(self, nbits)
+        if nbits > 0 and self.bits_left == 0:
+            self._fill()
+        return value
 
 
 def parse_aimres2(data):
@@ -146,26 +174,42 @@ def parse_aimres2(data):
             chunks.append(AimChunk(tag_s.strip(), fields, b""))
             continue
         if tag_s.startswith("IMSLD32") or tag_s.startswith("IMSLD8"):
-            # 6×u32 header; payload length = size_a (fields[4])
+            # size_a includes the first length prefix (fields[5]), already
+            # consumed by the six-field view. Bare payload is size_a - 4.
             if off + 24 > n:
                 break
             fields = struct.unpack_from("<6I", data, off)
             off += 24
-            size_a = fields[4]
+            size_a = fields[4] - 4
+            if size_a < 0:
+                raise ImsldError("IMSLD32 stream size smaller than first prefix")
+            # Read-only recovery of the historical raw writer. Its size_a
+            # omitted the prefix and size_b incorrectly held raw pixel bytes.
+            if off + 13 <= n and data[off] == 1:
+                raw_size, raw_flags = struct.unpack_from("<II", data, off + 1)
+                legacy_size = 13 + raw_size
+                if (raw_flags & 0x80000000 and fields[5] == raw_size and
+                        fields[4] == legacy_size and off + legacy_size <= n):
+                    _recovery_warning("repairing legacy raw IMSLD32 size_a/size_b framing", off)
+                    size_a = legacy_size
             if size_a > n - off:
+                _recovery_warning("clipping declared image payload to available bytes", off)
                 size_a = n - off
             payload = data[off : off + size_a]
             off += size_a
             chunks.append(AimChunk(tag_s.strip(), fields, payload))
             continue
         if tag_s.startswith("IMSLDXT"):
-            # w, h, size_a, size_b then size_a payload (SLD-compressed DXT)
+            # size_b is the first prefix; bare payload length is size_a - 4.
             if off + 16 > n:
                 break
             fields = struct.unpack_from("<4I", data, off)
             off += 16
-            size_a = fields[2]
+            size_a = fields[2] - 4
+            if size_a < 0:
+                raise ImsldError("IMSLDXT stream size smaller than first prefix")
             if size_a > n - off:
+                _recovery_warning("clipping declared image payload to available bytes", off)
                 size_a = n - off
             payload = data[off : off + size_a]
             off += size_a
@@ -181,6 +225,7 @@ def parse_aimres2(data):
             off += 12
             size_a = fields[2]
             if size_a > n - off:
+                _recovery_warning("clipping declared image payload to available bytes", off)
                 size_a = n - off
             payload = data[off : off + size_a]
             off += size_a
@@ -193,7 +238,7 @@ def parse_aimres2(data):
     return chunks
 
 
-def sld_decompress(blob):
+def sld_decompress(blob, strict_native=False):
     """
     Decompress one SLDCOMP blob (optional leading 0x01) → raw bytes.
     Layout (after optional 0x01)::
@@ -242,7 +287,7 @@ def sld_decompress(blob):
         else:
             bases.append(bases[i - 1] + masks[i - 1] + 1)
 
-    br = _BitReader(blob, 12)
+    br = (_NativeBitReader if strict_native else _BitReader)(blob, 12)
     out = bytearray()
     remaining = size
     while remaining > 0:
@@ -265,11 +310,17 @@ def sld_decompress(blob):
                 break
         if dist <= 0 or dist > len(out):
             raise ImsldError("bad match dist=%s out=%s" % (dist, len(out)))
+        if strict_native and length > remaining:
+            raise ImsldError("native SLD: match exceeds declared output")
+        if not strict_native and length > remaining:
+            _recovery_warning("truncating match beyond declared output", br.off)
         for _ in range(length):
             if remaining <= 0:
                 break
             out.append(out[-dist])
             remaining -= 1
+    if not strict_native and br.bits_left == 0 and br.off + 4 > len(blob):
+        _recovery_warning("missing native DWORD lookahead after final decoded bit", br.off)
     return bytes(out)
 
 
@@ -318,6 +369,7 @@ def sld_decompress_stream(payload, expected=None):
     out = bytearray()
     pos = 0
     n = len(payload)
+    warned_resync = False
 
     while pos < n - 12 and (expected is None or len(out) < expected):
         while pos < n and payload[pos] == 0:
@@ -336,6 +388,9 @@ def sld_decompress_stream(payload, expected=None):
                 try:
                     raw = sld_decompress(payload[pos + 4 : pos + 4 + clen])
                 except ImsldError:
+                    if not warned_resync:
+                        _recovery_warning("resynchronizing after invalid length-prefixed block", pos)
+                        warned_resync = True
                     pos += 1
                     continue
                 out += raw
@@ -343,6 +398,9 @@ def sld_decompress_stream(payload, expected=None):
                 continue
 
         if not _looks_like_sld(payload, pos):
+            if not warned_resync:
+                _recovery_warning("scanning past bytes outside a recognized SLD block", pos)
+                warned_resync = True
             pos += 1
             continue
 
@@ -357,10 +415,14 @@ def sld_decompress_stream(payload, expected=None):
             raw = sld_decompress(chunk)
         except ImsldError:
             try:
+                _recovery_warning("retrying bare block beyond inferred boundary", pos)
                 raw = sld_decompress(payload[pos:])
                 out += raw
                 break
             except ImsldError:
+                if not warned_resync:
+                    _recovery_warning("resynchronizing after invalid bare block", pos)
+                    warned_resync = True
                 pos += 1
                 continue
         out += raw
@@ -371,6 +433,7 @@ def sld_decompress_stream(payload, expected=None):
     if not out:
         raise ImsldError("no SLD blocks decoded")
     if expected is not None and len(out) > expected:
+        _recovery_warning("clipping decoded output to expected raster size", pos)
         return bytes(out[:expected])
     return bytes(out)
 
